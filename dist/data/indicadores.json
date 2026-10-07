@@ -8,42 +8,108 @@
   "consulta_em": "2026-10-07",
   "eleicoes": [
     {
-      "ano": 2024,
+      "ano": 2026,
       "turno": 1,
-      "data": "06/10/2024",
-      "cargo": "Prefeito",
-      "eleitorado": 566290,
-      "comparecimento": 457121,
-      "abstencoes": 109169,
-      "brancos": 15343,
-      "nulos": 24544,
-      "fonte": "https://apps.tre-pb.jus.br/aplicativos/resultadosVotacao/arquivos_ele2024_t1/resumido/Eleicao_2024_t1_ComparecimentoBrancosNulosPorMunicipio.xls",
-      "sha256": "62794b047cd9731137f6756374165dc3e1ca818158992dafa43f79d96331dec8"
-    },
-    {
-      "ano": 2024,
-      "turno": 2,
-      "data": "27/10/2024",
-      "cargo": "Prefeito",
-      "eleitorado": 566290,
-      "comparecimento": 436930,
-      "abstencoes": 129360,
-      "brancos": 11592,
-      "nulos": 20482,
-      "fonte": "https://apps.tre-pb.jus.br/aplicativos/resultadosVotacao/arquivos_ele2024_t2/resumido/Eleicao_2024_t2_ComparecimentoBrancosNulosPorMunicipio.xls",
-      "sha256": "0aaba194b319aaa29a114373be439f6344a4f94e943cc57a2e74541b023cb564"
+      "data": "04/10/2026",
+      "cargo": "Presidente",
+      "codigo_cargo": "1",
+      "eleicao_tse": "6257",
+      "municipio_tse": "20516",
+      "eleitorado": 591750,
+      "comparecimento": 496403,
+      "abstencoes": 95347,
+      "brancos": 9441,
+      "nulos": 15992,
+      "nulos_urna": 15975,
+      "nulos_tecnicos": 17,
+      "validos": 470970,
+      "secoes_total": 1714,
+      "secoes_totalizadas": 1714,
+      "atualizacao_tse": "05/10/2026 12:51:05",
+      "geracao_arquivo_tse": "05/10/2026 12:52:21",
+      "candidatos": [
+        {
+          "numero": "13",
+          "nome": "LULA",
+          "partido": "PT",
+          "votos": 219023
+        },
+        {
+          "numero": "14",
+          "nome": "RENAN SANTOS",
+          "partido": "MISSÃO",
+          "votos": 11025
+        },
+        {
+          "numero": "16",
+          "nome": "HERTZ DIAS",
+          "partido": "PSTU",
+          "votos": 202
+        },
+        {
+          "numero": "21",
+          "nome": "EDMILSON COSTA",
+          "partido": "PCB",
+          "votos": 57
+        },
+        {
+          "numero": "22",
+          "nome": "FLAVIO BOLSONARO",
+          "partido": "PL",
+          "votos": 215086
+        },
+        {
+          "numero": "27",
+          "nome": "CLARIANA BARAO",
+          "partido": "DC",
+          "votos": 206
+        },
+        {
+          "numero": "29",
+          "nome": "RUI COSTA PIMENTA",
+          "partido": "PCO",
+          "votos": 83
+        },
+        {
+          "numero": "30",
+          "nome": "ZEMA",
+          "partido": "NOVO",
+          "votos": 725
+        },
+        {
+          "numero": "35",
+          "nome": "VETERINÁRIO WILSON GRASSI",
+          "partido": "DEMOCRATA",
+          "votos": 46
+        },
+        {
+          "numero": "55",
+          "nome": "RONALDO CAIADO",
+          "partido": "PSD",
+          "votos": 6042
+        },
+        {
+          "numero": "70",
+          "nome": "ESCRITOR AUGUSTO CURY",
+          "partido": "AVANTE",
+          "votos": 17814
+        },
+        {
+          "numero": "80",
+          "nome": "SAMARA",
+          "partido": "UP",
+          "votos": 661
+        }
+      ],
+      "fonte": "https://resultados.tse.jus.br/oficial/ele2026/6257/dados/pb/pb20516-c0001-e006257-u.json",
+      "sha256": "921b9d7fb520277f6e866c22179ef4c4da172908fc86fcb8a282275441ed2815"
     }
   ],
   "fontes": [
     {
-      "titulo": "TRE-PB · 1º turno de 2024 (XLS)",
-      "url": "https://apps.tre-pb.jus.br/aplicativos/resultadosVotacao/arquivos_ele2024_t1/resumido/Eleicao_2024_t1_ComparecimentoBrancosNulosPorMunicipio.xls",
-      "descricao": "Tabela de comparecimento, votos brancos e nulos por município. Aba Prefeito, linha João Pessoa."
-    },
-    {
-      "titulo": "TRE-PB · 2º turno de 2024 (XLS)",
-      "url": "https://apps.tre-pb.jus.br/aplicativos/resultadosVotacao/arquivos_ele2024_t2/resumido/Eleicao_2024_t2_ComparecimentoBrancosNulosPorMunicipio.xls",
-      "descricao": "Tabela de comparecimento, votos brancos e nulos por município. Aba Prefeito, linha João Pessoa."
+      "titulo": "TSE · Presidente · João Pessoa · 1º turno de 2026 (JSON)",
+      "url": "https://resultados.tse.jus.br/oficial/ele2026/6257/dados/pb/pb20516-c0001-e006257-u.json",
+      "descricao": "Eleição 6257, cargo 1, município 20516. Totalização de 05/10/2026 às 12:51:05; arquivo gerado às 12:52:21. Inclui os nulos técnicos no total de nulos."
     },
     {
       "titulo": "IBGE · João Pessoa",

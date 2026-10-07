@@ -1,28 +1,67 @@
 # João Pessoa · Lula & PT
 
-Painel independente em Streamlit, restrito a João Pessoa/PB (IBGE 2507507). Identidade temática Lula/PT explícita, sem alegação de vínculo oficial. Indicadores descritivos do município inteiro, sem segmentação eleitoral por bairro ou pessoa.
+Painel independente em Streamlit para **Presidente, primeiro turno de 2026**, restrito a **João Pessoa/PB** (IBGE 2507507, TSE 20516). Identidade temática Lula/PT explícita, sem alegação de vínculo oficial. Mostra Lula (13), Flávio Bolsonaro (22), abstenções e votos nulos como totais descritivos do município inteiro, sem segmentação eleitoral por urna, bairro ou pessoa.
 
 ## Executar
 
 ```bash
 python -m pip install -r requirements.txt
-streamlit run dist/app.py
+streamlit run streamlit_app.py
 ```
 
-## Publicação
+## GitHub privado e Streamlit Community Cloud
+
+O aplicativo está preparado para execução nativa em Python no Streamlit Community Cloud. O arquivo de entrada é `streamlit_app.py`, na raiz, que reutiliza `dist/app.py` e seus dados. A aparência está configurada em `.streamlit/config.toml`; as dependências estão fixadas em `requirements.txt`.
+
+Para enviar este projeto a um novo repositório privado na conta autenticada do GitHub, execute na raiz deste projeto:
+
+```bash
+gh auth status
+gh repo create joao-pessoa-painel --private --source=. --remote=origin --push
+```
+
+O comando de criação deve ser executado somente após os arquivos estarem commitados. Se já existir um repositório com esse nome ou um remoto `origin`, confira o destino antes de prosseguir. Não substitua o repositório de outro projeto nem altere sua visibilidade.
+
+Depois, em [Streamlit Community Cloud](https://share.streamlit.io/), selecione **Create app** e use:
+
+| Campo | Valor |
+| --- | --- |
+| Repositório | `<sua-conta>/joao-pessoa-painel` |
+| Branch | `main` |
+| Main file path | `streamlit_app.py` |
+| Python, em Advanced settings | `3.12` |
+| Secrets | Nenhum necessário |
+
+O Streamlit precisa de acesso autorizado ao repositório privado. Na conta do Streamlit, confira **Settings → Linked accounts → Source control**. A privacidade do repositório e a visibilidade do aplicativo são configurações diferentes; confira o acesso do app antes de compartilhar o link.
+
+Referências oficiais: [publicação](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy) e [conexão com repositórios privados](https://docs.streamlit.io/deploy/streamlit-community-cloud/get-started/connect-your-github-account).
+
+O arquivo `.streamlit/secrets.toml` e arquivos `.env` são ignorados pelo Git. Os dados municipais, o GeoJSON e a biblioteca Leaflet acompanham o repositório. O app não depende de serviços de dados locais nem de caminhos temporários.
+
+## Publicação anterior no Sites
 
 `dist/` é um site estático que executa o mesmo aplicativo Python com **Stlite 0.85.1 / Streamlit 1.45.1** no navegador. Não exige servidor Python ou credenciais externas. O primeiro acesso baixa o runtime Python/WebAssembly, exigindo internet e podendo demorar. Os mapas de ruas dependem do OpenStreetMap. Fontes e dados acompanham o aplicativo; nenhum cadastro ou dado pessoal é coletado pelo painel.
 
-O manifesto `.openai/hosting.json` identifica a publicação Sites. O site começa privado para o proprietário; compartilhamento é gerenciado no Sites.
+O manifesto `.openai/hosting.json` identifica a publicação anterior no Sites. Esses arquivos foram preservados; o Streamlit Community Cloud usa `streamlit_app.py` e não depende do manifesto ou do Stlite.
 
 ## Dados
 
-- Eleição municipal para prefeito: 06/10/2024 e 27/10/2024, TRE-PB.
+- Eleição para presidente: 04/10/2026, primeiro turno, TSE, eleição 6257, cargo 1.
+- Totalização municipal: 05/10/2026 às 12:51:05 (Brasília), 1.714 de 1.714 seções totalizadas.
+- Snapshot oficial preservado em `dist/data/tse-presidente-jp-2026.json`; consulta em 07/10/2026.
 - População residente: Censo IBGE 2022.
 - Contorno municipal simplificado: API de malhas do IBGE, sem período explícito retornado pela API.
 - Fontes completas e datas em `dist/data/indicadores.json` e na interface.
 
-As tabelas XLS foram lidas diretamente para conferir os totais de João Pessoa. O código de origem TRE-PB é 20516; o IBGE usa 2507507. As ausências têm como denominador o eleitorado apto; brancos e nulos, o comparecimento. Não são somados como um indicador de preferência política. Não há dados eleitorais de 2026 nem atualização automática. A coordenada (-7.155, -34.875) veio do link fornecido, não de um local de encontro.
+O JSON oficial do TSE foi lido diretamente. O código do município no TSE é 20516; o IBGE usa 2507507. Os votos de Lula e Flávio têm como denominador os votos válidos. As abstenções usam o eleitorado apto; brancos e nulos, o comparecimento. Os 15.992 nulos incluem 15.975 nulos na urna e 17 técnicos. As categorias não são somadas como um indicador de preferência política. Não há atualização automática. A coordenada (-7.155, -34.875) veio do link fornecido, não de um local de encontro.
+
+Para regerar `indicadores.json` e `indicadores.csv` a partir do snapshot:
+
+```bash
+python scripts/import_tse.py
+```
+
+O importador recusa dados de outro cargo, turno, eleição ou município e verifica a reconciliação dos totais. Dados eleitorais de outros pleitos não são apresentados no painel.
 
 ## Verificação
 

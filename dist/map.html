@@ -11,7 +11,7 @@ const city = __GEOJSON__;
 const map = L.map('map', {scrollWheelZoom:false, maxZoom:19, minZoom:11});
 const boundary = L.geoJSON(city, {style:{color:'#cb102a',weight:2.5,fillColor:'#cb102a',fillOpacity:0.035}});
 if (__SHOW_BOUNDARY__) boundary.addTo(map);
-boundary.bindPopup('<strong>João Pessoa · Paraíba</strong><br>Limite municipal simplificado · IBGE<br>Código do município: 2507507');
+boundary.bindPopup(__MUNICIPAL_POPUP__,{maxWidth:340});
 map.fitBounds(boundary.getBounds(),{padding:[22,22]});
 map.setMaxBounds(boundary.getBounds().pad(0.35));
 const tiles=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · Limite: IBGE'}).addTo(map);
