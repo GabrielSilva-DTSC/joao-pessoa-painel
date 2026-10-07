@@ -9,11 +9,11 @@ python -m pip install -r requirements.txt
 streamlit run streamlit_app.py
 ```
 
-## GitHub privado e Streamlit Community Cloud
+## GitHub e Streamlit Community Cloud
 
 O aplicativo está preparado para execução nativa em Python no Streamlit Community Cloud. O arquivo de entrada é `streamlit_app.py`, na raiz, que reutiliza `dist/app.py` e seus dados. A aparência está configurada em `.streamlit/config.toml`; as dependências estão fixadas em `requirements.txt`.
 
-Repositório privado: [GabrielSilva-DTSC/joao-pessoa-painel](https://github.com/GabrielSilva-DTSC/joao-pessoa-painel).
+Repositório público: [GabrielSilva-DTSC/joao-pessoa-painel](https://github.com/GabrielSilva-DTSC/joao-pessoa-painel).
 
 Para enviar atualizações já commitadas, execute na raiz deste projeto:
 
@@ -21,7 +21,7 @@ Para enviar atualizações já commitadas, execute na raiz deste projeto:
 git push origin main
 ```
 
-O remoto `origin` aponta para esse repositório privado. Não altere sua visibilidade ao publicar o app.
+O remoto `origin` aponta para esse repositório público.
 
 Depois, em [Streamlit Community Cloud](https://share.streamlit.io/), selecione **Create app** e use:
 
@@ -33,7 +33,7 @@ Depois, em [Streamlit Community Cloud](https://share.streamlit.io/), selecione *
 | Python, em Advanced settings | `3.12` |
 | Secrets | Nenhum necessário |
 
-O Streamlit precisa de acesso autorizado ao repositório privado. Na conta do Streamlit, confira **Settings → Linked accounts → Source control**. A privacidade do repositório e a visibilidade do aplicativo são configurações diferentes; confira o acesso do app antes de compartilhar o link.
+Na conta do Streamlit, confira a conexão com o GitHub em **Settings → Linked accounts → Source control**. O arquivo de entrada é relativo à raiz do repositório: `streamlit_app.py`. O importador em `scripts/` não é a entrada do dashboard.
 
 Referências oficiais: [publicação](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy) e [conexão com repositórios privados](https://docs.streamlit.io/deploy/streamlit-community-cloud/get-started/connect-your-github-account).
 
