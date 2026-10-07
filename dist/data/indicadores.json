@@ -1,0 +1,74 @@
+{
+  "municipio": {
+    "nome": "João Pessoa",
+    "uf": "PB",
+    "codigo_ibge": "2507507",
+    "populacao_censo_2022": 833932
+  },
+  "consulta_em": "2026-10-07",
+  "eleicoes": [
+    {
+      "ano": 2024,
+      "turno": 1,
+      "data": "06/10/2024",
+      "cargo": "Prefeito",
+      "eleitorado": 566290,
+      "comparecimento": 457121,
+      "abstencoes": 109169,
+      "brancos": 15343,
+      "nulos": 24544,
+      "fonte": "https://apps.tre-pb.jus.br/aplicativos/resultadosVotacao/arquivos_ele2024_t1/resumido/Eleicao_2024_t1_ComparecimentoBrancosNulosPorMunicipio.xls",
+      "sha256": "62794b047cd9731137f6756374165dc3e1ca818158992dafa43f79d96331dec8"
+    },
+    {
+      "ano": 2024,
+      "turno": 2,
+      "data": "27/10/2024",
+      "cargo": "Prefeito",
+      "eleitorado": 566290,
+      "comparecimento": 436930,
+      "abstencoes": 129360,
+      "brancos": 11592,
+      "nulos": 20482,
+      "fonte": "https://apps.tre-pb.jus.br/aplicativos/resultadosVotacao/arquivos_ele2024_t2/resumido/Eleicao_2024_t2_ComparecimentoBrancosNulosPorMunicipio.xls",
+      "sha256": "0aaba194b319aaa29a114373be439f6344a4f94e943cc57a2e74541b023cb564"
+    }
+  ],
+  "fontes": [
+    {
+      "titulo": "TRE-PB · 1º turno de 2024 (XLS)",
+      "url": "https://apps.tre-pb.jus.br/aplicativos/resultadosVotacao/arquivos_ele2024_t1/resumido/Eleicao_2024_t1_ComparecimentoBrancosNulosPorMunicipio.xls",
+      "descricao": "Tabela de comparecimento, votos brancos e nulos por município. Aba Prefeito, linha João Pessoa."
+    },
+    {
+      "titulo": "TRE-PB · 2º turno de 2024 (XLS)",
+      "url": "https://apps.tre-pb.jus.br/aplicativos/resultadosVotacao/arquivos_ele2024_t2/resumido/Eleicao_2024_t2_ComparecimentoBrancosNulosPorMunicipio.xls",
+      "descricao": "Tabela de comparecimento, votos brancos e nulos por município. Aba Prefeito, linha João Pessoa."
+    },
+    {
+      "titulo": "IBGE · João Pessoa",
+      "url": "https://www.ibge.gov.br/cidades-e-estados/pb/joao-pessoa.html",
+      "descricao": "População residente no Censo 2022: 833.932 pessoas. Código IBGE 2507507."
+    },
+    {
+      "titulo": "IBGE · Limite municipal (GeoJSON)",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/municipios/2507507?formato=application/vnd.geo%2Bjson&qualidade=maxima",
+      "descricao": "Malha simplificada obtida em 07/10/2026. A resposta da API não informa o ano da malha; não representa limites de bairros."
+    },
+    {
+      "titulo": "OpenStreetMap · Cartografia e licença",
+      "url": "https://www.openstreetmap.org/copyright",
+      "descricao": "Mapa de ruas colaborativo. A cobertura depende dos dados disponíveis e da conexão."
+    },
+    {
+      "titulo": "Semob-JP · Linhas de ônibus",
+      "url": "https://servicos.semobjp.pb.gov.br/linhas-de-onibus/",
+      "descricao": "Consulta oficial de linhas, itinerários e horários."
+    },
+    {
+      "titulo": "TSE · Autoatendimento eleitoral",
+      "url": "https://www.tse.jus.br/servicos-eleitorais/autoatendimento-eleitoral/",
+      "descricao": "Serviços oficiais para consulta individual de situação eleitoral e local de votação."
+    }
+  ]
+}

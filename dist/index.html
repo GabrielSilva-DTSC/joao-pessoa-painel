@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#cb102a">
+  <meta name="description" content="João Pessoa em números. Painel independente com identidade Lula/PT, mapa municipal e indicadores oficiais de participação eleitoral de 2024.">
+  <title>João Pessoa · Lula &amp; PT</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/browser@0.85.1/build/stlite.css">
+  <style>
+    body{margin:0;background:#f6f7f9;color:#17202d;font-family:Arial,sans-serif}
+    #boot{position:fixed;inset:0;z-index:99999;background:#f6f7f9;display:grid;place-content:center;padding:2rem}
+    .boot-card{max-width:32rem;border-top:6px solid #cb102a;background:white;padding:2.5rem;box-shadow:0 12px 50px #17202d12;border-radius:4px}
+    .boot-brand{font-size:1.1rem;color:#cb102a;font-weight:900;letter-spacing:.12em}
+    h1{font-size:2rem;line-height:1.2}p{font-size:1rem;line-height:1.7}
+    .progress{height:4px;background:#f0e1e5;overflow:hidden}.progress::after{content:"";display:block;width:40%;height:100%;background:#cb102a;animation:load 2s ease infinite}
+    @keyframes load{from{transform:translateX(-100%)}to{transform:translateX(350%)}}
+    @media(prefers-reduced-motion:reduce){.progress::after{animation:none}}
+    button{padding:.8rem 1rem;background:#cb102a;border:0;border-radius:6px;color:white;font-size:1rem;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div id="boot" role="status" aria-live="polite"><div class="boot-card">
+    <div class="boot-brand">★ LULA &amp; PT</div>
+    <h1>João Pessoa em números</h1>
+    <p id="boot-message">Carregando o painel e o mapa. O primeiro acesso pode levar até um minuto.</p>
+    <div class="progress"></div>
+    <p style="color:#657180;font-size:.875rem">Iniciativa independente · Dados públicos · Paraíba</p>
+  </div></div>
+  <div id="root"></div>
+  <noscript>Ative o JavaScript para abrir o painel interativo de João Pessoa.</noscript>
+  <script type="module" src="./bootstrap.js"></script>
+</body>
+</html>

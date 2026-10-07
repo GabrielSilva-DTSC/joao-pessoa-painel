@@ -1,0 +1,25 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>__LEAFLET_CSS__
+html,body{margin:0;height:100%;font-family:Arial,sans-serif}#map{height:500px;width:100%;background:#e9edf0;border-radius:10px}
+.leaflet-control-attribution{font-size:12px!important}.leaflet-popup-content{font-size:14px;line-height:1.6}
+.map-label{background:white;border:1px solid #dce2e9;border-radius:5px;padding:9px 12px;font-size:13px;font-weight:700;color:#263445;box-shadow:0 2px 5px #0001}
+.map-reset{padding:8px 10px;background:white;border:1px solid #dce2e9;border-radius:5px;font-size:14px;cursor:pointer;color:#263445}
+#tile-warning{position:absolute;bottom:36px;left:12px;right:12px;padding:10px;background:white;border-radius:5px;z-index:1000;font-size:14px;display:none}
+</style></head><body><div id="map" role="region" aria-label="Mapa de referência do município de João Pessoa"></div><div id="tile-warning" role="status">O mapa de ruas está indisponível. O contorno municipal continua visível.</div>
+<script>__LEAFLET_JS__</script><script>
+const city = __GEOJSON__;
+const map = L.map('map', {scrollWheelZoom:false, maxZoom:19, minZoom:11});
+const boundary = L.geoJSON(city, {style:{color:'#cb102a',weight:2.5,fillColor:'#cb102a',fillOpacity:0.035}});
+if (__SHOW_BOUNDARY__) boundary.addTo(map);
+boundary.bindPopup('<strong>João Pessoa · Paraíba</strong><br>Limite municipal simplificado · IBGE<br>Código do município: 2507507');
+map.fitBounds(boundary.getBounds(),{padding:[22,22]});
+map.setMaxBounds(boundary.getBounds().pad(0.35));
+const tiles=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · Limite: IBGE'}).addTo(map);
+let errors=0,loaded=0;
+tiles.on('tileerror',()=>{errors++;if(errors>=4&&loaded===0)document.getElementById('tile-warning').style.display='block'});
+tiles.on('tileload',()=>{loaded++;document.getElementById('tile-warning').style.display='none'});
+if (__SHOW_REFERENCE__) L.circleMarker([-7.155,-34.875],{radius:7,color:'white',weight:3,fillColor:'#2474b3',fillOpacity:1}).addTo(map).bindPopup('<strong>Referência do link enviado</strong><br>Latitude −7,155 · Longitude −34,875<br>Ponto de referência geográfica; não é local de encontro definido.');
+const label=L.control({position:'topright'});label.onAdd=()=>{const el=L.DomUtil.create('div','map-label');el.textContent='JOÃO PESSOA · PB';return el};label.addTo(map);
+const reset=L.control({position:'bottomleft'});reset.onAdd=()=>{const el=L.DomUtil.create('button','map-reset');el.textContent='Ver município inteiro';el.type='button';L.DomEvent.disableClickPropagation(el);el.onclick=()=>map.fitBounds(boundary.getBounds(),{padding:[22,22]});return el};reset.addTo(map);
+L.control.scale({imperial:false,position:'bottomright'}).addTo(map);
+</script></body></html>
