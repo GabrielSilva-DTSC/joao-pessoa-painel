@@ -1,6 +1,7 @@
 """Presidente, 1º turno de 2026: totais municipais de João Pessoa/PB."""
 import json
 import sys
+import base64
 from html import escape
 from pathlib import Path
 import streamlit as st
@@ -65,8 +66,13 @@ with st.sidebar:
     st.caption('Totais municipais de presidente, primeiro turno de 2026, com fonte e data da apuração.')
     st.markdown('<div class="small-note">Identidade temática Lula/PT.<br>Iniciativa independente, sem vínculo oficial declarado.</div>', unsafe_allow_html=True)
 
-st.markdown('<div id="jp-ready" class="eyebrow">★ Lula &amp; PT · Paraíba · Dados públicos</div>', unsafe_allow_html=True)
-st.title('João Pessoa · Presidente 2026')
+heading, identity = st.columns([3, 1])
+with heading:
+    st.markdown('<div id="jp-ready" class="eyebrow">★ Lula &amp; PT · Paraíba · Dados públicos</div>', unsafe_allow_html=True)
+    st.title('João Pessoa · Presidente 2026')
+with identity:
+    logo = base64.b64encode((ROOT / 'assets/ufpb-logo.png').read_bytes()).decode('ascii')
+    st.markdown(f'<div class="ufpb-logo"><a href="https://www.ufpb.br/brasao-ufpb/" target="_blank" rel="noopener noreferrer"><img src="data:image/png;base64,{logo}" alt="Logo da Universidade Federal da Paraíba — UFPB"></a></div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Primeiro turno · Votação e participação no município.</div>', unsafe_allow_html=True)
 st.markdown('<span class="tag">04/10/2026 · 1º turno</span><span class="tag">Presidente</span><span class="tag">Totais de João Pessoa</span>', unsafe_allow_html=True)
 cols = st.columns(4)
@@ -140,4 +146,4 @@ with source_tab:
     st.markdown('### Site de referência')
     st.markdown('[Onde dá pra conversar](https://www.ondedapraconversar.com.br/#/perto/@-7.155,-34.875) é a referência visual e geográfica. Os valores deste painel foram obtidos diretamente no TSE, no recorte municipal, sem reproduzir recomendações de locais de abordagem.')
 
-st.markdown('<div class="footer"><strong>★ Lula &amp; PT · João Pessoa</strong><br>Iniciativa independente, sem vínculo oficial declarado com Lula, PT, Prefeitura, TSE ou IBGE. Identidade partidária explícita; indicadores públicos apresentados de forma descritiva.<br>Presidente · 1º turno de 2026 · Fontes consultadas em 07/10/2026 · Mapa © OpenStreetMap / IBGE</div>', unsafe_allow_html=True)
+st.markdown('<div class="footer"><strong>★ Lula &amp; PT · João Pessoa</strong><br>Iniciativa independente, sem vínculo oficial ou apoio declarado de Lula, PT, UFPB, Prefeitura, TSE ou IBGE. Identidade partidária explícita; indicadores públicos apresentados de forma descritiva.<br>Presidente · 1º turno de 2026 · Fontes consultadas em 07/10/2026 · Mapa © OpenStreetMap / IBGE</div>', unsafe_allow_html=True)

@@ -13,20 +13,21 @@ streamlit run streamlit_app.py
 
 O aplicativo está preparado para execução nativa em Python no Streamlit Community Cloud. O arquivo de entrada é `streamlit_app.py`, na raiz, que reutiliza `dist/app.py` e seus dados. A aparência está configurada em `.streamlit/config.toml`; as dependências estão fixadas em `requirements.txt`.
 
-Para enviar este projeto a um novo repositório privado na conta autenticada do GitHub, execute na raiz deste projeto:
+Repositório privado: [GabrielSilva-DTSC/joao-pessoa-painel](https://github.com/GabrielSilva-DTSC/joao-pessoa-painel).
+
+Para enviar atualizações já commitadas, execute na raiz deste projeto:
 
 ```bash
-gh auth status
-gh repo create joao-pessoa-painel --private --source=. --remote=origin --push
+git push origin main
 ```
 
-O comando de criação deve ser executado somente após os arquivos estarem commitados. Se já existir um repositório com esse nome ou um remoto `origin`, confira o destino antes de prosseguir. Não substitua o repositório de outro projeto nem altere sua visibilidade.
+O remoto `origin` aponta para esse repositório privado. Não altere sua visibilidade ao publicar o app.
 
 Depois, em [Streamlit Community Cloud](https://share.streamlit.io/), selecione **Create app** e use:
 
 | Campo | Valor |
 | --- | --- |
-| Repositório | `<sua-conta>/joao-pessoa-painel` |
+| Repositório | `GabrielSilva-DTSC/joao-pessoa-painel` |
 | Branch | `main` |
 | Main file path | `streamlit_app.py` |
 | Python, em Advanced settings | `3.12` |
@@ -37,6 +38,8 @@ O Streamlit precisa de acesso autorizado ao repositório privado. Na conta do St
 Referências oficiais: [publicação](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy) e [conexão com repositórios privados](https://docs.streamlit.io/deploy/streamlit-community-cloud/get-started/connect-your-github-account).
 
 O arquivo `.streamlit/secrets.toml` e arquivos `.env` são ignorados pelo Git. Os dados municipais, o GeoJSON e a biblioteca Leaflet acompanham o repositório. O app não depende de serviços de dados locais nem de caminhos temporários.
+
+A logo da UFPB aparece no cabeçalho com suas cores e proporções originais. A origem do arquivo está documentada em `dist/assets/README.md`; a interface identifica o painel como independente, sem vínculo ou apoio institucional declarado.
 
 ## Publicação anterior no Sites
 

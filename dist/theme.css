@@ -34,6 +34,8 @@ p,li{line-height:1.6}
 .method{background:white;border:1px solid #e2e5ea;border-left:3px solid #cb102a;padding:1rem 1.25rem;border-radius:5px;font-size:.9rem;color:#526070;margin:1rem 0}
 .footer{border-top:1px solid #e0e4e8;margin-top:2rem;padding-top:1rem;font-size:.8rem;line-height:1.7;color:#657180}
 .csv-download{display:block;text-align:center;padding:.65rem .8rem;color:#17202d!important;border:1px solid #d1d5db;border-radius:8px;text-decoration:none!important;font-size:.9rem}.csv-download:hover{border-color:#cb102a;color:#cb102a!important}
+.ufpb-logo{padding:.65rem .8rem;background:white;border:1px solid #e3e5e9;border-radius:10px;max-width:240px;margin:0 0 .6rem auto}.ufpb-logo img{display:block;width:100%;height:auto;object-fit:contain}
+@media(max-width:700px){.ufpb-logo{max-width:200px;margin:0 0 .6rem}}
 [data-testid="stTabs"] [role="tablist"]{gap:1.4rem;border-bottom:1px solid #e0e4e8;margin:.3rem 0 1.3rem}
 [data-testid="stTabs"] [role="tab"]{font-size:.95rem;font-weight:600;padding-bottom:.8rem}
 [data-testid="stLinkButton"] a{justify-content:flex-start;font-size:.9rem}
