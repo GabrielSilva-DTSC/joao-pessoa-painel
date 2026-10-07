@@ -8,7 +8,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 ROOT = Path(__file__).resolve().parent
-st.set_page_config(page_title="João Pessoa · Presidente 2026 · Lula & PT", page_icon="★", layout="wide", initial_sidebar_state="auto")
+st.set_page_config(page_title="João Pessoa · Presidente 2026 · Lula & PT", page_icon="★", layout="wide", initial_sidebar_state="collapsed")
 st.markdown(f"<style>{(ROOT / 'theme.css').read_text(encoding='utf-8')}</style>", unsafe_allow_html=True)
 
 
@@ -43,6 +43,8 @@ def bar(label, value, base, base_label, color):
 
 
 data = load_data()
+locations = json.loads((ROOT / 'data/locais-votacao.json').read_text(encoding='utf-8'))
+assert (locations['municipio']['codigo_tse'], locations['ano'], locations['turno']) == ('20516', 2026, 1)
 selected = data['eleicoes'][0]
 candidates = {c['numero']: c for c in selected['candidatos']}
 lula, flavio = candidates['13']['votos'], candidates['22']['votos']
@@ -57,7 +59,7 @@ with st.sidebar:
     st.divider()
     st.markdown('### Camadas do mapa')
     show_boundary = st.checkbox('Limite municipal', value=True)
-    show_reference = st.checkbox('Referência do link enviado', value=True)
+    show_reference = st.checkbox('Referência do link enviado', value=False)
     st.divider()
     if sys.platform == 'emscripten':
         st.markdown('<a class="csv-download" href="./data/indicadores.csv" download="joao-pessoa-presidente-2026-t1.csv">Baixar indicadores (CSV)</a>', unsafe_allow_html=True)
@@ -66,58 +68,51 @@ with st.sidebar:
     st.caption('Totais municipais de presidente, primeiro turno de 2026, com fonte e data da apuração.')
     st.markdown('<div class="small-note">Identidade temática Lula/PT.<br>Iniciativa independente, sem vínculo oficial declarado.</div>', unsafe_allow_html=True)
 
-heading, identity = st.columns([3, 1])
-with heading:
-    st.markdown('<div id="jp-ready" class="eyebrow">★ Lula &amp; PT · Paraíba · Dados públicos</div>', unsafe_allow_html=True)
-    st.title('João Pessoa · Presidente 2026')
-with identity:
-    logo = base64.b64encode((ROOT / 'assets/ufpb-logo.png').read_bytes()).decode('ascii')
-    st.markdown(f'<div class="ufpb-logo"><a href="https://www.ufpb.br/brasao-ufpb/" target="_blank" rel="noopener noreferrer"><img src="data:image/png;base64,{logo}" alt="Logo da Universidade Federal da Paraíba — UFPB"></a></div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Primeiro turno · Votação e participação no município.</div>', unsafe_allow_html=True)
-st.markdown('<span class="tag">04/10/2026 · 1º turno</span><span class="tag">Presidente</span><span class="tag">Totais de João Pessoa</span>', unsafe_allow_html=True)
-cols = st.columns(4)
-with cols[0]: metric('Lula · 13', number(lula), f"{percent(lula, selected['validos'])} dos votos válidos", True)
-with cols[1]: metric('Flávio Bolsonaro · 22', number(flavio), f"{percent(flavio, selected['validos'])} dos votos válidos")
-with cols[2]: metric('Abstenções', number(selected['abstencoes']), f"{percent(selected['abstencoes'], selected['eleitorado'])} do eleitorado apto")
-with cols[3]: metric('Votos nulos', number(selected['nulos']), f"{percent(selected['nulos'], selected['comparecimento'])} do comparecimento")
-st.caption(f"Eleitorado apto: {number(selected['eleitorado'])} · Comparecimento: {number(selected['comparecimento'])} · Seções totalizadas: {number(selected['secoes_totalizadas'])}/{number(selected['secoes_total'])} · TSE: {selected['atualizacao_tse']}")
+logo = base64.b64encode((ROOT / 'assets/ufpb-logo.png').read_bytes()).decode('ascii')
+st.markdown(f'<div class="panel-brand"><div id="jp-ready" class="eyebrow">★ Lula &amp; PT · Paraíba · Dados públicos</div><a class="ufpb-logo" href="https://www.ufpb.br/brasao-ufpb/" target="_blank" rel="noopener noreferrer"><img src="data:image/png;base64,{logo}" alt="Logo da Universidade Federal da Paraíba — UFPB"></a></div>', unsafe_allow_html=True)
+st.title('João Pessoa · Presidente 2026')
+st.markdown('<div class="subtitle">Primeiro turno · 04/10/2026 · Locais de votação e resultados municipais.</div>', unsafe_allow_html=True)
 
-map_tab, participation_tab, source_tab = st.tabs(['Mapa e totais', 'Participação', 'Fontes e serviços'])
+map_tab, participation_tab, source_tab = st.tabs(['Mapa', 'Resultados', 'Fontes'])
 with map_tab:
-    main, info = st.columns([2.6, 1], gap='large')
-    with main:
-        st.subheader('João Pessoa no mapa')
-        popup = ('<strong>João Pessoa · Presidente · 1º turno de 2026</strong><br>'
-            f'Lula (13): {number(lula)} · {percent(lula, selected["validos"])} dos válidos<br>'
-            f'Flávio Bolsonaro (22): {number(flavio)} · {percent(flavio, selected["validos"])} dos válidos<br>'
-            f'Abstenções: {number(selected["abstencoes"])} · {percent(selected["abstencoes"], selected["eleitorado"])} dos aptos<br>'
-            f'Nulos: {number(selected["nulos"])} · {percent(selected["nulos"], selected["comparecimento"])} do comparecimento<br>'
-            '<small>Totais do município inteiro · Fonte: TSE</small>')
-        replacements = {
-            '__LEAFLET_CSS__': (ROOT / 'vendor/leaflet.css').read_text(encoding='utf-8'),
-            '__LEAFLET_JS__': (ROOT / 'vendor/leaflet.js').read_text(encoding='utf-8'),
-            '__GEOJSON__': (ROOT / 'data/municipio.geojson').read_text(encoding='utf-8'),
-            '__SHOW_BOUNDARY__': json.dumps(show_boundary), '__SHOW_REFERENCE__': json.dumps(show_reference),
-            '__MUNICIPAL_POPUP__': json.dumps(popup),
-        }
-        template = (ROOT / 'map.html').read_text(encoding='utf-8')
-        for key, value in replacements.items(): template = template.replace(key, value)
-        components.html(template, height=505, scrolling=False)
-        st.markdown('<div class="key"><span class="key-line"></span>Limite municipal <span class="key-dot"></span>Referência do link enviado</div>', unsafe_allow_html=True)
-        st.caption('Clique no contorno para consultar os totais municipais. Ruas: OpenStreetMap. Limite simplificado: IBGE. O ponto azul é apenas a coordenada do link enviado.')
-    with info:
-        st.subheader('Apuração municipal')
-        st.markdown(f'<div class="city-card"><h3>Presidente · 2026</h3><p>Primeiro turno · João Pessoa</p><div class="big">{percent(selected["secoes_totalizadas"], selected["secoes_total"])}</div><p>das seções totalizadas</p><p>{selected["atualizacao_tse"]} · TSE</p></div>', unsafe_allow_html=True)
-        st.markdown(f"**Votos válidos:** {number(selected['validos'])}")
-        st.markdown(f"**Outros candidatos:** {number(other)} · {percent(other, selected['validos'])} dos válidos")
-        st.markdown(f"**Votos em branco:** {number(selected['brancos'])} · {percent(selected['brancos'], selected['comparecimento'])} do comparecimento")
-        st.caption(f"Nulos: {number(selected['nulos_urna'])} na urna + {number(selected['nulos_tecnicos'])} técnicos, conforme a classificação do TSE.")
-        st.link_button('Consultar a fonte do TSE', selected['fonte'], use_container_width=True)
-    st.markdown('<div class="method"><strong>Bases de cálculo</strong><br>Lula e Flávio: percentual dos votos válidos. Abstenções: percentual do eleitorado apto. Brancos e nulos: percentual do comparecimento. Esses grupos não devem ser somados como medida de preferência ou intenção de voto.</div>', unsafe_allow_html=True)
+    st.subheader('Locais de votação')
+    st.caption('Clique em um ponto para ver endereço, zona e seções. Amplie os círculos numerados para separar locais próximos.')
+    replacements = {
+        '__LEAFLET_CSS__': (ROOT / 'vendor/leaflet.css').read_text(encoding='utf-8'),
+        '__LEAFLET_JS__': (ROOT / 'vendor/leaflet.js').read_text(encoding='utf-8'),
+        '__CLUSTER_CSS__': (ROOT / 'vendor/MarkerCluster.css').read_text(encoding='utf-8'),
+        '__CLUSTER_JS__': (ROOT / 'vendor/leaflet.markercluster.js').read_text(encoding='utf-8'),
+        '__GEOJSON__': (ROOT / 'data/municipio.geojson').read_text(encoding='utf-8'),
+        '__LOCAIS__': json.dumps(locations, ensure_ascii=False).replace('<', r'\u003c'),
+        '__SHOW_BOUNDARY__': json.dumps(show_boundary), '__SHOW_REFERENCE__': json.dumps(show_reference),
+    }
+    template = (ROOT / 'map.html').read_text(encoding='utf-8')
+    for key, value in replacements.items():
+        template = template.replace(key, value)
+    components.html(template, height=680, scrolling=False)
+    st.markdown('<div class="map-legend"><span><i class="legend-active"></i>Cadastro ativo</span><span><i class="legend-inactive"></i>Outra situação cadastral</span><span><i class="legend-boundary"></i>Limite municipal</span></div>', unsafe_allow_html=True)
+    st.caption(f"Fonte: TSE · Cadastro gerado em {locations['geracao_tse']} · {number(locations['resumo']['secoes_principais'])} seções principais e {locations['resumo']['secoes_agregadas']} agregadas. Os pontos representam os locais de votação, não a posição física de cada urna.")
+    missing = [site for site in locations['locais'] if site['coordenada'] != 'tse']
+    if missing:
+        with st.expander(f"Locais sem coordenada válida no TSE ({len(missing)})"):
+            for site in missing:
+                st.markdown(f"**{site['nome']}** — zona {site['zona']}, local {site['numero']}.")
+                st.write(f"{site['endereco']} · {site['bairro']} · João Pessoa/PB")
+                st.caption('Seções principais: ' + ', '.join(map(str, site['secoes'])) + '. Localização não estimada.')
+    with st.expander('Como ler o cadastro'):
+        st.markdown('Cada ponto identifica um registro de local de votação do TSE, por zona e número do local. Um prédio pode reunir vários registros. Os círculos mostram a quantidade de locais agrupados; ao ampliar, os pontos se separam. As fichas indicam a situação cadastral informada pelo TSE, inclusive **bloqueado**, sem inferir se o prédio está aberto hoje.')
+        st.markdown('Seções agregadas aparecem com a seção principal correspondente. Quando a principal está em outro local, o nome desse local é indicado. Para confirmar seu local pessoal, consulte o serviço oficial do TSE.')
+        st.link_button('Consultar meu local no TSE', 'https://www.tse.jus.br/servicos-eleitorais/local-de-votacao-zonas-eleitorais')
 
 with participation_tab:
     st.subheader('Votação e participação · 1º turno de 2026')
     st.caption('Presidente · João Pessoa, Paraíba · Todos os valores descrevem o município inteiro.')
+    cols = st.columns(4)
+    with cols[0]: metric('Lula · 13', number(lula), f"{percent(lula, selected['validos'])} dos votos válidos", True)
+    with cols[1]: metric('Flávio Bolsonaro · 22', number(flavio), f"{percent(flavio, selected['validos'])} dos votos válidos")
+    with cols[2]: metric('Abstenções', number(selected['abstencoes']), f"{percent(selected['abstencoes'], selected['eleitorado'])} do eleitorado apto")
+    with cols[3]: metric('Votos nulos', number(selected['nulos']), f"{percent(selected['nulos'], selected['comparecimento'])} do comparecimento")
+    st.caption(f"Eleitorado apto: {number(selected['eleitorado'])} · Comparecimento: {number(selected['comparecimento'])} · Seções totalizadas: {number(selected['secoes_totalizadas'])}/{number(selected['secoes_total'])} · TSE: {selected['atualizacao_tse']}")
     left, right = st.columns(2, gap='large')
     with left:
         st.markdown('### Distribuição dos votos válidos')
@@ -128,16 +123,20 @@ with participation_tab:
         for label, key, base, color in [('Comparecimento', 'comparecimento', 'eleitorado', '#354d68'), ('Abstenções', 'abstencoes', 'eleitorado', '#766485'), ('Votos nulos', 'nulos', 'comparecimento', '#738294'), ('Votos em branco', 'brancos', 'comparecimento', '#738294')]:
             bar(label, selected[key], selected[base], 'eleitorado apto' if base == 'eleitorado' else 'comparecimento', color)
     st.divider()
+    st.markdown('<div class="method"><strong>Bases de cálculo</strong><br>Candidatos: votos válidos. Abstenções: eleitorado apto. Brancos e nulos: comparecimento. As categorias não devem ser somadas como medida de preferência ou intenção de voto.</div>', unsafe_allow_html=True)
     st.markdown('**Totais para conferência**')
     st.table([{'Indicador': label, 'Total': number(selected[key])} for label, key in [('Eleitorado apto', 'eleitorado'), ('Comparecimento', 'comparecimento'), ('Abstenções', 'abstencoes'), ('Votos válidos', 'validos'), ('Votos em branco', 'brancos'), ('Votos nulos — total', 'nulos'), ('Nulos na urna', 'nulos_urna'), ('Nulos técnicos', 'nulos_tecnicos')]])
 
 with source_tab:
     st.subheader('Fontes e metodologia')
-    st.markdown('Os indicadores vêm do arquivo municipal oficial de **resultados do TSE**, para **Presidente, primeiro turno de 2026, em João Pessoa**. O mapa combina o contorno municipal do IBGE com as ruas do OpenStreetMap.')
+    st.markdown('Os indicadores vêm do arquivo municipal oficial de **resultados do TSE**, para **Presidente, primeiro turno de 2026, em João Pessoa**. Os locais de votação vêm do cadastro público do TSE; o mapa usa o contorno municipal do IBGE e as ruas do OpenStreetMap.')
+    st.markdown(f"**[TSE · Cadastro dos locais de votação de 2026]({locations['fonte']['catalogo']})**")
+    st.write(f"Recorte: João Pessoa/PB, 1º turno. Cadastro gerado em {locations['geracao_tse']}. {locations['resumo']['com_coordenadas']} locais com coordenadas do TSE e {locations['resumo']['sem_coordenadas']} sem coordenada válida. Sem geocodificação complementar.")
+    st.caption('Utilizamos o local indicado para o pleito, e não o campo de local original. Situações cadastrais e seções agregadas são preservadas. As coordenadas válidas foram conferidas dentro do contorno municipal do IBGE.')
     for source in data['fontes']:
         st.markdown(f"**[{source['titulo']}]({source['url']})**  \n{source['descricao']}")
     st.markdown('### Critérios de leitura')
-    st.markdown('- Município: João Pessoa (PB), código TSE 20516 e IBGE 2507507.\n- Eleição TSE 6257, cargo 1 (Presidente), turno 1, em 04/10/2026.\n- Lula (13) e Flávio Bolsonaro (22): votos nominais; percentual sobre votos válidos.\n- Abstenções ÷ eleitorado apto; brancos e nulos ÷ comparecimento.\n- Nulos incluem os nulos na urna e os nulos técnicos informados pelo TSE.\n- Percentuais calculados a partir dos totais, com duas casas decimais.\n- Dados agregados não identificam pessoas nem os motivos da ausência ou do voto nulo.\n- Contorno municipal simplificado, sem detalhamento eleitoral por urna ou bairro.')
+    st.markdown('- Município: João Pessoa (PB), código TSE 20516 e IBGE 2507507.\n- Eleição TSE 6257, cargo 1 (Presidente), turno 1, em 04/10/2026.\n- Lula (13) e Flávio Bolsonaro (22): votos nominais; percentual sobre votos válidos.\n- Abstenções ÷ eleitorado apto; brancos e nulos ÷ comparecimento.\n- Nulos incluem os nulos na urna e os nulos técnicos informados pelo TSE.\n- Percentuais calculados a partir dos totais, com duas casas decimais.\n- Dados agregados não identificam pessoas nem os motivos da ausência ou do voto nulo.\n- Locais de votação com endereço, zona e seções; resultados eleitorais apenas no total municipal.')
     st.info(f"Cópia consultada em 07/10/2026. Totalização do TSE: {selected['atualizacao_tse']} (Brasília). Não há atualização automática ao abrir o painel.")
     st.markdown('### Serviços para consulta')
     st.link_button('Linhas e horários de ônibus · Semob-JP', 'https://servicos.semobjp.pb.gov.br/linhas-de-onibus/')

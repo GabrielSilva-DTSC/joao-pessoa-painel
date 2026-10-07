@@ -1,25 +1,140 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <style>__LEAFLET_CSS__
-html,body{margin:0;height:100%;font-family:Arial,sans-serif}#map{height:500px;width:100%;background:#e9edf0;border-radius:10px}
-.leaflet-control-attribution{font-size:12px!important}.leaflet-popup-content{font-size:14px;line-height:1.6}
-.map-label{background:white;border:1px solid #dce2e9;border-radius:5px;padding:9px 12px;font-size:13px;font-weight:700;color:#263445;box-shadow:0 2px 5px #0001}
-.map-reset{padding:8px 10px;background:white;border:1px solid #dce2e9;border-radius:5px;font-size:14px;cursor:pointer;color:#263445}
-#tile-warning{position:absolute;bottom:36px;left:12px;right:12px;padding:10px;background:white;border-radius:5px;z-index:1000;font-size:14px;display:none}
-</style></head><body><div id="map" role="region" aria-label="Mapa de referência do município de João Pessoa"></div><div id="tile-warning" role="status">O mapa de ruas está indisponível. O contorno municipal continua visível.</div>
-<script>__LEAFLET_JS__</script><script>
+__CLUSTER_CSS__
+*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Arial,sans-serif;color:#243244;background:#f6f7f9}
+.map-shell{height:100%;display:flex;flex-direction:column;gap:10px;padding-bottom:4px}
+.toolbar{display:flex;gap:12px;align-items:flex-end}.search{flex:1;min-width:0}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}input,select,button{font:inherit}
+input,select{width:100%;min-width:0;border:1px solid #cbd3dc;border-radius:8px;padding:11px 12px;background:white;color:#243244;font-size:16px;min-height:44px}
+button.reset{min-height:44px;white-space:nowrap;border:1px solid #cbd3dc;border-radius:8px;background:white;padding:10px 14px;color:#243244;cursor:pointer}
+button:hover{background:#f0f2f5}input:focus-visible,select:focus-visible,button:focus-visible,.leaflet-marker-icon:focus-visible{outline:3px solid #376ba9;outline-offset:2px}
+.search-results[hidden],#selection-note[hidden],#tile-warning[hidden]{display:none}
+#selection-note{margin:8px 0 0;background:#fff7e7;border:1px solid #e8cd8a;border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.5;max-height:115px;overflow:auto}
+.map-meta{display:flex;gap:12px;justify-content:space-between;align-items:center;font-size:12px;color:#566475;line-height:1.4}
+.map-meta>span{flex:1;min-width:0}.zoom-controls{display:flex;gap:6px}.zoom-controls button{width:44px;height:44px;border:1px solid #cbd3dc;border-radius:8px;background:white;color:#243244;font-size:24px;cursor:pointer}.zoom-controls button:disabled{color:#a1aab5;cursor:default}
+#map{flex:1;min-height:330px;width:100%;background:#e9edf0;border:1px solid #dce2e9;border-radius:12px}
+#tile-warning{font-size:13px;background:#fff7e7;padding:8px 12px;border-radius:6px}
+.leaflet-control-attribution{font-size:10px!important;max-width:100%;overflow-wrap:anywhere}
+.site-marker,.site-cluster{border:0;background:transparent}
+.site-marker span{display:block;width:24px;height:24px;margin:4px;border:3px solid white;border-radius:50%;background:#af1832;box-shadow:0 1px 5px #24324470}
+.site-marker.inactive span{background:#64748b}
+.site-cluster span{display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:#fff;color:#a3152c;border:3px solid #af1832;border-radius:50%;box-shadow:0 1px 6px #24324435;font-weight:700;font-size:14px}
+.leaflet-popup-content-wrapper{border-radius:12px}.leaflet-popup-content{font-size:13px;line-height:1.5;margin:18px;overflow-wrap:anywhere}
+.leaflet-popup-content h2{font-size:15px;line-height:1.4;margin:5px 12px 10px 0;color:#17202d}
+.leaflet-popup-content p{margin:8px 0}.popup-kicker{color:#6a7685;font-size:11px;font-weight:700;letter-spacing:.04em}
+.popup-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.popup-meta span{background:#f0f3f6;border-radius:4px;padding:3px 6px;font-size:12px}
+.popup-notice{color:#775015;background:#fff5df;padding:8px;border-radius:5px}
+.popup-sections{padding-top:8px;border-top:1px solid #e4e8ed}.popup-source{font-size:11px;color:#637083;border-top:1px solid #e4e8ed;padding-top:8px}
+.leaflet-container a.leaflet-popup-close-button{width:32px;height:32px;font-size:22px;line-height:30px;color:#526071}
+@media(max-width:480px){.toolbar{gap:8px}.reset{font-size:13px!important;padding:10px!important}.map-meta{gap:4px}.leaflet-popup-content{margin:15px}.leaflet-control-attribution{font-size:9px!important}}
+@media(prefers-reduced-motion:reduce){.leaflet-zoom-anim .leaflet-zoom-animated,.leaflet-cluster-anim .leaflet-marker-icon{transition:none!important}}
+</style></head><body>
+<div class="map-shell">
+  <div class="toolbar">
+    <div class="search"><label for="search">Buscar local, endereço ou seção</label><input type="search" id="search" placeholder="Ex.: Lyceu ou seção 114" autocomplete="off" aria-controls="site-select" /></div>
+    <button class="reset" id="reset" type="button">Mostrar todos</button>
+  </div>
+  <div class="search-results" id="search-results" hidden>
+    <label for="site-select">Abrir ficha de um local encontrado</label>
+    <select id="site-select"><option value="">Selecione um local</option></select>
+    <p id="selection-note" role="status" hidden></p>
+  </div>
+  <div class="map-meta"><span id="result-count" role="status" aria-live="polite"></span><div class="zoom-controls" role="group" aria-label="Zoom do mapa"><button id="zoom-out" type="button" aria-label="Afastar mapa">−</button><button id="zoom-in" type="button" aria-label="Aproximar mapa">+</button></div></div>
+  <div id="map" role="region" aria-label="Locais de votação do TSE em João Pessoa"></div>
+  <div id="tile-warning" role="status" hidden>Ruas indisponíveis no momento. Os locais do TSE e o limite municipal continuam disponíveis.</div>
+</div>
+<script>__LEAFLET_JS__</script><script>__CLUSTER_JS__</script><script>
 const city = __GEOJSON__;
-const map = L.map('map', {scrollWheelZoom:false, maxZoom:19, minZoom:11});
-const boundary = L.geoJSON(city, {style:{color:'#cb102a',weight:2.5,fillColor:'#cb102a',fillOpacity:0.035}});
+const registry = __LOCAIS__;
+const map = L.map('map', {zoomControl:false,scrollWheelZoom:false,fadeAnimation:false,zoomAnimation:false,markerZoomAnimation:false,maxZoom:19,minZoom:10});
+const boundary = L.geoJSON(city, {interactive:false,style:{color:'#ad2840',weight:1.5,fillOpacity:0.02}});
 if (__SHOW_BOUNDARY__) boundary.addTo(map);
-boundary.bindPopup(__MUNICIPAL_POPUP__,{maxWidth:340});
-map.fitBounds(boundary.getBounds(),{padding:[22,22]});
 map.setMaxBounds(boundary.getBounds().pad(0.35));
-const tiles=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · Limite: IBGE'}).addTo(map);
-let errors=0,loaded=0;
-tiles.on('tileerror',()=>{errors++;if(errors>=4&&loaded===0)document.getElementById('tile-warning').style.display='block'});
-tiles.on('tileload',()=>{loaded++;document.getElementById('tile-warning').style.display='none'});
-if (__SHOW_REFERENCE__) L.circleMarker([-7.155,-34.875],{radius:7,color:'white',weight:3,fillColor:'#2474b3',fillOpacity:1}).addTo(map).bindPopup('<strong>Referência do link enviado</strong><br>Latitude −7,155 · Longitude −34,875<br>Ponto de referência geográfica; não é local de encontro definido.');
-const label=L.control({position:'topright'});label.onAdd=()=>{const el=L.DomUtil.create('div','map-label');el.textContent='JOÃO PESSOA · PB';return el};label.addTo(map);
-const reset=L.control({position:'bottomleft'});reset.onAdd=()=>{const el=L.DomUtil.create('button','map-reset');el.textContent='Ver município inteiro';el.type='button';L.DomEvent.disableClickPropagation(el);el.onclick=()=>map.fitBounds(boundary.getBounds(),{padding:[22,22]});return el};reset.addTo(map);
-L.control.scale({imperial:false,position:'bottomright'}).addTo(map);
+map.fitBounds(boundary.getBounds(),{padding:[22,22],animate:false});
+const zoomIn=document.getElementById('zoom-in'),zoomOut=document.getElementById('zoom-out');
+zoomIn.addEventListener('click',()=>map.zoomIn());
+zoomOut.addEventListener('click',()=>map.zoomOut());
+function updateZoomButtons(){zoomIn.disabled=map.getZoom()>=map.getMaxZoom();zoomOut.disabled=map.getZoom()<=map.getMinZoom();}
+map.on('zoomend',updateZoomButtons);updateZoomButtons();
+const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · Locais: TSE · Limite: IBGE'}).addTo(map);
+let tileErrors=0,loadedTiles=0;
+tiles.on('tileerror',()=>{if(++tileErrors>=4 && !loadedTiles) document.getElementById('tile-warning').hidden=false;});
+tiles.on('tileload',()=>{loadedTiles++;document.getElementById('tile-warning').hidden=true;});
+if (__SHOW_REFERENCE__) L.circleMarker([-7.155,-34.875],{radius:6,color:'white',weight:2,fillColor:'#2474b3',fillOpacity:1}).addTo(map).bindPopup('Referência geográfica do link enviado. Não representa um local de votação.');
+
+const clusters = L.markerClusterGroup({
+  maxClusterRadius:52,showCoverageOnHover:false,spiderfyOnMaxZoom:true,spiderfyDistanceMultiplier:1.5,
+  animate:false,
+  iconCreateFunction:cluster=>L.divIcon({html:`<span aria-label="${cluster.getChildCount()} locais de votação; ampliar">${cluster.getChildCount()}</span>`,className:'site-cluster',iconSize:[40,40]}),
+});
+map.addLayer(clusters);
+const elements = Object.fromEntries(['search','search-results','site-select','result-count','selection-note','reset'].map(id=>[id,document.getElementById(id)]));
+const markers = new Map();
+const normalize = value=>String(value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR');
+const escapeHtml = value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const popupWidth=()=>Math.max(180,Math.min(330,document.getElementById('map').clientWidth-64));
+function popup(site){
+  const aggregated=site.agregadas.map(s=>`${s.numero} → ${s.principal}${s.local_principal!==site.id ? ` (${escapeHtml(s.nome_local_principal)})` : ''}`).join('<br>');
+  return `<div class="popup-kicker">LOCAL DE VOTAÇÃO · TSE</div><h2>${escapeHtml(site.nome)}</h2>
+    <div class="popup-meta"><span>Zona ${site.zona}</span><span>Local ${site.numero}</span><span>${escapeHtml(site.tipo)}</span></div>
+    <p>${escapeHtml(site.endereco || 'Endereço não informado')}<br>${escapeHtml(site.bairro)} · João Pessoa/PB</p>
+    <p${site.situacao!=='ATIVO'?' class="popup-notice"':''}><strong>Situação no cadastro:</strong> ${escapeHtml(site.situacao || 'Não informada')}</p>
+    <div class="popup-sections"><strong>Seções principais (${site.secoes.length})</strong><br>${site.secoes.join(', ') || 'Nenhuma informada'}</div>
+    ${aggregated?`<p><strong>Seções agregadas → principal</strong><br>${aggregated}</p>`:''}
+    ${site.distribuidas.length?`<p><strong>Distribuídas de ofício:</strong> ${site.distribuidas.join(', ')}</p>`:''}
+    <p class="popup-source">1º turno · 04/10/2026<br>Cadastro TSE: ${escapeHtml(registry.geracao_tse)}<br>O ponto representa o local, não a posição de cada equipamento.</p>`;
+}
+for (const site of registry.locais) {
+  if (site.coordenada!=='tse') continue;
+  const marker=L.marker([site.latitude,site.longitude], {
+    icon:L.divIcon({html:'<span></span>',className:`site-marker${site.situacao!=='ATIVO'?' inactive':''}`,iconSize:[32,32],iconAnchor:[16,16],popupAnchor:[0,-12]}),
+    title:`${site.nome} · Zona ${site.zona} · Local ${site.numero}`,alt:site.nome,keyboard:true,
+  }).bindPopup(popup(site), {maxWidth:popupWidth(),minWidth:180,maxHeight:280,autoPanPadding:[20,20]});
+  markers.set(site.id,marker);
+}
+function fitMarkers(list) {
+  if (list.length) map.fitBounds(L.featureGroup(list).getBounds(),{padding:[34,34],maxZoom:list.length===1?16:15,animate:false});
+  else map.fitBounds(boundary.getBounds(),{padding:[22,22],animate:false});
+}
+function chooseSite(id) {
+  const site=registry.locais.find(s=>s.id===id);
+  map.closePopup();
+  elements['selection-note'].hidden=true;
+  if (!site) return;
+  const marker=markers.get(id);
+  if (marker) clusters.zoomToShowLayer(marker,()=>marker.openPopup());
+  else {
+    elements['selection-note'].textContent=`${site.nome} · Zona ${site.zona} · Local ${site.numero}. ${site.endereco} · ${site.bairro}. Seções principais: ${site.secoes.join(', ')}. Situação: ${site.situacao}. Sem coordenada válida no cadastro do TSE; localização não estimada.`;
+    elements['selection-note'].hidden=false;
+  }
+}
+function update() {
+  const query=normalize(elements.search.value.trim());
+  // A numeric query finds exact section, zone or local identifiers, never vote totals.
+  const matches=registry.locais.filter(site=>{
+    if (!query) return true;
+    if (/^\d+$/.test(query)) return [site.zona,site.numero,...site.secoes,...site.agregadas.map(s=>s.numero),...site.distribuidas].includes(Number(query));
+    return normalize(`${site.nome} ${site.endereco} ${site.bairro} zona ${site.zona} ${site.secoes.map(s=>`seção ${s}`).join(' ')} ${site.agregadas.map(s=>`seção ${s.numero}`).join(' ')}`).includes(query);
+  });
+  map.closePopup();
+  clusters.clearLayers();
+  const visible=matches.map(s=>markers.get(s.id)).filter(Boolean);
+  clusters.addLayers(visible);
+  elements['result-count'].textContent=`${visible.length} locais no mapa · ${matches.length} registros${matches.length!==visible.length?' · '+(matches.length-visible.length)+' sem coordenada':''}`;
+  elements['search-results'].hidden=!query;
+  elements['selection-note'].hidden=true;
+  elements['site-select'].replaceChildren(new Option(matches.length?'Selecione um local':'Nenhum local encontrado',''));
+  for (const site of matches) elements['site-select'].add(new Option(`${site.nome} · Zona ${site.zona} · Local ${site.numero}${markers.has(site.id)?'':' · sem coordenada'}`,site.id));
+  elements['site-select'].disabled=!matches.length;
+  map.invalidateSize({pan:false});
+  fitMarkers(visible);
+  if (query && matches.length===1) { elements['site-select'].value=matches[0].id;chooseSite(matches[0].id); }
+}
+let debounce;
+elements.search.addEventListener('input',()=>{clearTimeout(debounce);debounce=setTimeout(update,180);});
+elements['site-select'].addEventListener('change',event=>chooseSite(event.target.value));
+elements.reset.addEventListener('click',()=>{clearTimeout(debounce);elements.search.value='';update();elements.search.focus({preventScroll:true});});
+new ResizeObserver(()=>{map.invalidateSize({pan:false});for (const marker of markers.values()) marker.getPopup().options.maxWidth=popupWidth();}).observe(document.getElementById('map'));
+update();
 </script></body></html>

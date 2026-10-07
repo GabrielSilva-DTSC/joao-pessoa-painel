@@ -1,0 +1,10 @@
+{
+  "titulo": "TSE · Eleitorado por local de votação · 2026",
+  "url": "https://cdn.tse.jus.br/estatistica/sead/odsele/eleitorado_locais_votacao/eleitorado_local_votacao_2026.zip",
+  "catalogo": "https://dadosabertos.tse.jus.br/dataset/eleitorado-2026",
+  "arquivo": "eleitorado_local_votacao_2026_PB.csv",
+  "consulta_em": "2026-10-07",
+  "sha256_csv_pb": "ca9d4d1bcdd7d1be6069b44515636f07494c338d25281733c2f6e449a76b62bc",
+  "nota": "Recorte municipal apenas com campos do cadastro de locais e seções; sem dados de eleitores ou votação. Coordenadas do TSE, sem geocodificação complementar.",
+  "sha256_recorte": "bd61484fc07f1934f4faaf600f59e6fa8a0ba685eee3002e0100b12faa635876"
+}

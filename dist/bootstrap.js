@@ -13,7 +13,7 @@ const longLoad = setTimeout(() => {
 }, 60000);
 try {
   const { mount } = await import(runtime);
-  const paths = ['app.py', 'data/municipio.geojson', 'data/indicadores.json', 'vendor/leaflet.js', 'vendor/leaflet.css', 'map.html', 'theme.css', 'assets/ufpb-logo.png'];
+  const paths = ['app.py', 'data/municipio.geojson', 'data/indicadores.json', 'data/locais-votacao.json', 'vendor/leaflet.js', 'vendor/leaflet.css', 'vendor/leaflet.markercluster.js', 'vendor/MarkerCluster.css', 'map.html', 'theme.css', 'assets/ufpb-logo.png'];
   const files = Object.fromEntries(await Promise.all(paths.map(async path => {
     const response = await fetch(new URL(path, import.meta.url));
     if (!response.ok) throw new Error(`Não foi possível carregar ${path}.`);

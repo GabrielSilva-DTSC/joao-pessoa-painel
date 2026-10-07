@@ -17,6 +17,12 @@ class StreamlitDeployment(unittest.TestCase):
             self.assertIn(expected, markup)
         self.assertNotIn('2024', markup)
         self.assertNotIn('prefeito', markup.lower())
+        self.assertEqual([tab.label for tab in app.tabs], ['Mapa', 'Resultados', 'Fontes'])
+        frame = app.get('iframe')[0].proto.srcdoc
+        self.assertIn('L.markerClusterGroup', frame)
+        self.assertIn('CRECHE FABIANA OLIVEIRA LUCENA', frame)
+        self.assertNotIn('__LOCAIS__', frame)
+        self.assertNotIn('__CLUSTER_JS__', frame)
         app.checkbox[0].set_value(False).run(timeout=30)
         self.assertFalse(app.exception)
         self.assertFalse(app.checkbox[0].value)
